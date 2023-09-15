@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recycler"
+    app:startDestination="@id/recyclerFragment">
+
+    <fragment
+        android:id="@+id/recyclerFragment"
+        android:name="com.example.navigationartbookkotlin.RecyclerFragment"
+        android:label="fragment_recycler"
+        tools:layout="@layout/fragment_recycler" >
+        <action
+            android:id="@+id/action_recyclerFragment_to_artFragment"
+            app:destination="@id/artFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/artFragment"
+        android:name="com.example.navigationartbookkotlin.ArtFragment"
+        android:label="fragment_art"
+        tools:layout="@layout/fragment_art" >
+        <action
+            android:id="@+id/action_artFragment_to_recyclerFragment"
+            app:destination="@id/recyclerFragment" />
+    </fragment>
+</navigation>
