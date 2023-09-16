@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
@@ -18,13 +19,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.Navigation
 import androidx.room.Room
-import androidx.room.RoomDatabase
+import com.example.navigationartbookkotlin.R
 import com.example.navigationartbookkotlin.databinding.FragmentArtBinding
 import com.example.navigationartbookkotlin.view.model.Art
 import com.example.navigationartbookkotlin.view.roomdb.ArtDao
 import com.example.navigationartbookkotlin.view.roomdb.ArtDatabase
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
 
 class ArtFragment : Fragment() {
@@ -38,6 +43,8 @@ class ArtFragment : Fragment() {
     private var mediaPick = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
     private lateinit var db : ArtDatabase
     private lateinit var artDao : ArtDao
+    private val cDisposable = CompositeDisposable()
+    private var artFromMain : Art? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,8 +66,52 @@ class ArtFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.imagePicker.setOnClickListener { imagePicker(view) }
         binding.saveArtButton.setOnClickListener { saveArtButton(view) }
+        binding.deleteArtButton.setOnClickListener { deleteArtButton(view) }
 
         super.onViewCreated(view, savedInstanceState)
+
+        arguments?.let {
+            val info = ArtFragmentArgs.fromBundle(it).info
+
+            when (info) {
+                "new" -> {
+                    binding.artNameText.setText("")
+                    binding.artistNameText.setText("")
+                    binding.artYearNameText.setText("")
+
+                    binding.deleteArtButton.visibility = View.GONE
+                    binding.saveArtButton.visibility = View.VISIBLE
+
+                    val bitmap = BitmapFactory.decodeResource(context?.resources, R.drawable.image_picker)
+                    binding.imagePicker.setImageBitmap(bitmap)
+                }
+                "old" -> {
+                    binding.saveArtButton.visibility = View.GONE
+                    binding.deleteArtButton.visibility = View.VISIBLE
+
+                    val selectedId = ArtFragmentArgs.fromBundle(it).id
+                    cDisposable.add(artDao.getId(selectedId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::handleResponseArgs)
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun handleResponseArgs(art : Art) {
+        artFromMain = art
+        binding.artNameText.setText(art.artName)
+        binding.artistNameText.setText(art.artistName)
+        binding.artYearNameText.setText(art.artYearName)
+
+        art.image?.let {
+            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            binding.imagePicker.setImageBitmap(bitmap)
+        }
     }
 
     private fun saveArtButton(view: View) {
@@ -77,8 +128,26 @@ class ArtFragment : Fragment() {
 
             val art = Art(artName, artistName,artYearName,byteArray)
 
-
+            cDisposable.add(artDao.insert(art)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleResponse)
+            )
         }
+    }
+
+    private fun deleteArtButton(view: View) {
+        artFromMain?.let {
+            cDisposable.add(artDao.delete(it)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleResponse)
+            )
+        }
+    }
+    private fun handleResponse() {
+        val action = ArtFragmentDirections.actionArtFragmentToRecyclerFragment()
+        Navigation.findNavController(requireView()).navigate(action)
     }
 
     private fun makeSmallerBitmap(image: Bitmap, scale: Int): Bitmap {
@@ -153,5 +222,10 @@ class ArtFragment : Fragment() {
                 Toast.makeText(requireContext(),"Permission Needed!", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
