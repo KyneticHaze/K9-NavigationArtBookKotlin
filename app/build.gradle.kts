@@ -42,6 +42,9 @@ android {
 dependencies {
 
     val navVersion = "2.7.2"
+    val roomVersion = "2.5.2"
+
+    implementation("androidx.room:room-rxjava3:$roomVersion")
 
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
