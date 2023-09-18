@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs.kotlin")
+    id("kotlin-kapt")
 }
 
 android {
@@ -44,11 +45,19 @@ dependencies {
     val navVersion = "2.7.2"
     val roomVersion = "2.5.2"
 
+    // Room
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    // RxJava3
     implementation("androidx.room:room-rxjava3:$roomVersion")
-
+    //RxAndroid
+    implementation ("io.reactivex.rxjava3:rxandroid:3.0.2")
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
+    //kapt
+    kapt ("androidx.room:room-compiler:$roomVersion")
+
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
