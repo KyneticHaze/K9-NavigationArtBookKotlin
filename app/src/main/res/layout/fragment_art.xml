@@ -5,14 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ArtFragment">
+    tools:context=".view.ArtFragment">
 
     <ImageView
         android:id="@+id/imagePicker"
-        android:onClick="imagePicker"
         android:layout_width="250dp"
         android:layout_height="230dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
+        android:onClick="imagePicker"
         android:src="@drawable/image_picker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,4 +59,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/artYearNameText" />
+
+    <Button
+        android:id="@+id/deleteArtButton"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:onClick="deleteArtButton"
+        android:text="Delete Art"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saveArtButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>
