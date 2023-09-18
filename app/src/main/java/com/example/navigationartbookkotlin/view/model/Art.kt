@@ -1,11 +1,20 @@
 package com.example.navigationartbookkotlin.view.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Entity(tableName = "artTable")
+@Entity
 class Art(
-    val artName: String,
-    val artistName: String,
-    val artYearName: String,
-    val image: ByteArray
-)
+    @ColumnInfo(name = "artName")
+    var artName: String,
+    @ColumnInfo(name = "artistName")
+    var artistName: String?,
+    @ColumnInfo(name = "artYearName")
+    var artYearName: String?,
+    @ColumnInfo(name = "image")
+    var image: ByteArray?
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id : Int = 0
+}
