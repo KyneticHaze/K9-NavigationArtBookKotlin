@@ -1,10 +1,11 @@
-package com.example.navigationartbookkotlin
+package com.example.navigationartbookkotlin.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.navigation.Navigation
+import com.example.navigationartbookkotlin.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,8 +25,8 @@ class MainActivity : AppCompatActivity() {
 
         when (item.itemId) {
             R.id.addArt -> {
-                val action = RecyclerFragmentDirections.actionRecyclerFragmentToArtFragment()
-                Navigation.findNavController(this,R.id.fragmentContainerView).navigate(action)
+                val action = RecyclerFragmentDirections.actionRecyclerFragmentToArtFragment("new", 0)
+                Navigation.findNavController(this, R.id.fragmentContainerView).navigate(action)
             }
             R.id.return_main -> {
                 val action = ArtFragmentDirections.actionArtFragmentToRecyclerFragment()

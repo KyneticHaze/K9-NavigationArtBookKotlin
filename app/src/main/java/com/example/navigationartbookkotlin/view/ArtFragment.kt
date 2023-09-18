@@ -126,7 +126,7 @@ class ArtFragment : Fragment() {
             smallBitmap.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
 
-            val art = Art(artName, artistName,artYearName,byteArray)
+            val art = Art(artName, artistName, artYearName, byteArray)
 
             cDisposable.add(artDao.insert(art)
                 .subscribeOn(Schedulers.io())
